@@ -1,8 +1,13 @@
 <mat-toolbar color="primary">
   <span>AngularNotes</span>
   <span class="spacer"></span>
-  <button mat-button routerLink="sign-in">Sign in</button>
-  <button mat-button routerLink="sign-up">Sign up</button>
-  <button mat-button (click)="logOut()">Log out</button>
+  <ng-container *ngIf="auth.currentUserSignal() === null">
+    <button mat-button routerLink="sign-in">Sign in</button>
+    <button mat-button routerLink="sign-up">Sign up</button>
+  </ng-container>
+  <ng-container *ngIf="auth.currentUserSignal()">
+    <button mat-button routerLink="user-info">{{auth.currentUserSignal()?.username}}</button>
+    <button mat-button (click)="logOut()">Log out</button>
+  </ng-container>
 </mat-toolbar>
 <router-outlet></router-outlet>

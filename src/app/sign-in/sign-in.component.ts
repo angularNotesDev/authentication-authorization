@@ -3,6 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class SignInComponent {
   fb = inject(FormBuilder);
+  authService = inject(AuthService);
+  routherService = inject(Router);
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -19,6 +23,10 @@ export class SignInComponent {
   });
 
   onSubmit() {
-    console.log('sign in');
+    this.authService.signInUser(this.form.getRawValue()).subscribe((response) => {
+      localStorage.setItem('token', response.user.token);
+      this.authService.currentUserSignal.set(response.user);
+      this.routherService.navigateByUrl('/user-info');
+    });
   }
 }
